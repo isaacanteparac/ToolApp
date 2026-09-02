@@ -2,25 +2,25 @@ package org.octanelab.toolapp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Primary & Accent Colors
-val CyanPrimary = Color(0xFF38BDF8)
-val CyanVariant = Color(0xFF0284C7)
-val VioletAccent = Color(0xFF818CF8)
-val EmeraldSuccess = Color(0xFF34D399)
-val RoseError = Color(0xFFFB7185)
-val AmberWarning = Color(0xFFFBBF24)
+// iOS OLED Black & Grouped System Colors
+val IOSBackground = Color(0xFF000000)
+val IOSGroupedBackground = Color(0xFF1C1C1E)
+val IOSCardBackground = Color(0xFF2C2C2E)
+val IOSCardHighlight = Color(0xFF3A3A3C)
+val IOSGlassHeader = Color(0xD91C1C1E)
+val IOSGlassBottomBar = Color(0xE61C1C1E)
 
-// Background & Surface Colors (Dark Theme First)
-val DarkBackground = Color(0xFF0F172A)
-val DarkSurface = Color(0xFF1E293B)
-val DarkSurfaceVariant = Color(0xFF334155)
-val DarkGlassHeader = Color(0xD90F172A)
+// iOS System Accent Colors
+val IOSBlue = Color(0xFF0A84FF)
+val IOSGreen = Color(0xFF30D158)
+val IOSOrange = Color(0xFFFF9F0A)
+val IOSRed = Color(0xFFFF453A)
+val IOSPink = Color(0xFFFF2D55)
+val IOSPurple = Color(0xFFBF5AF2)
+val IOSCyan = Color(0xFF64D2FF)
 
-// Text & Content Colors
-val TextPrimary = Color(0xFFF8FAFC)
-val TextSecondary = Color(0xFF94A3B8)
-val TextMuted = Color(0xFF64748B)
-
-// Border & Glass Tokens
-val GlassBorder = Color(0x3394A3B8)
-val GlassBorderActive = Color(0x6638BDF8)
+// iOS Text & Separator Colors
+val IOSTextPrimary = Color(0xFFFFFFFF)
+val IOSTextSecondary = Color(0x99FFFFFF)
+val IOSTextMuted = Color(0x66FFFFFF)
+val IOSSeparator = Color(0x38545458)

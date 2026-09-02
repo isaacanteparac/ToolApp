@@ -92,33 +92,20 @@ class VolumeOverlayService : Service() {
     private fun showFloatingHandle() {
         if (handleView != null) return
 
-        // Create elegant floating edge handle strip
+        // Create gesture navigation pill handle (matching iOS/Android gesture bar style)
         val container = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER
             background = GradientDrawable().apply {
-                setColor(Color.parseColor("#990F172A")) // Dark glassmorphic background
-                setStroke(3, Color.parseColor("#64748B")) // Subtle border
-                cornerRadius = 24f
+                setColor(Color.parseColor("#E6FFFFFF")) // Adaptive translucent gesture pill color
+                setStroke(1, Color.parseColor("#40000000")) // Subtle contrast border for visibility
+                cornerRadius = 999f // Full rounded capsule pill shape
             }
         }
-
-        // Add subtle grip lines inside handle
-        val gripLine = View(this).apply {
-            layoutParams = LinearLayout.LayoutParams(12, 80).apply {
-                topMargin = 12
-                bottomMargin = 12
-            }
-            background = GradientDrawable().apply {
-                setColor(Color.parseColor("#94A3B8"))
-                cornerRadius = 6f
-            }
-        }
-        container.addView(gripLine)
 
         val params = WindowManager.LayoutParams(
-            48, // width in pixels
-            360, // height in pixels
+            14, // Width in pixels (exact gesture bar thickness)
+            340, // Height in pixels (gesture bar length)
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                     WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
@@ -126,13 +113,13 @@ class VolumeOverlayService : Service() {
             PixelFormat.TRANSLUCENT
         ).apply {
             gravity = Gravity.END or Gravity.CENTER_VERTICAL
-            x = 0
+            x = 28 // Positioned right against the side edge border
             y = 0
         }
 
         var startY = 0f
         var touchAccumulator = 0f
-        val swipeThreshold = 35f // touch sensitivity in pixels
+        val swipeThreshold = 12f // Instant responsive swipe (no press needed)
 
         container.setOnTouchListener { _, event ->
             when (event.action) {
@@ -148,9 +135,9 @@ class VolumeOverlayService : Service() {
 
                     if (abs(touchAccumulator) >= swipeThreshold) {
                         if (touchAccumulator > 0) {
-                            adjustVolume(1) // Swipe UP -> Increase
+                            adjustVolume(1) // Swipe UP -> Increase Volume immediately
                         } else {
-                            adjustVolume(-1) // Swipe DOWN -> Decrease
+                            adjustVolume(-1) // Swipe DOWN -> Decrease Volume immediately
                         }
                         touchAccumulator = 0f
                     }
@@ -194,15 +181,15 @@ class VolumeOverlayService : Service() {
                 gravity = Gravity.CENTER_VERTICAL
                 setPadding(32, 24, 32, 24)
                 background = GradientDrawable().apply {
-                    setColor(Color.parseColor("#F10F172A")) // Sleek glass dark
-                    cornerRadius = 32f
-                    setStroke(2, Color.parseColor("#38BDF8")) // Cyan accent border
+                    setColor(Color.parseColor("#1C1C1E")) // 100% Solid opaque iOS dark background (no transparency)
+                    cornerRadius = 24f
+                    setStroke(2, Color.parseColor("#0A84FF")) // Solid iOS blue border
                 }
             }
 
             val iconView = ImageView(this).apply {
                 setImageResource(android.R.drawable.ic_lock_silent_mode_off)
-                setColorFilter(Color.parseColor("#38BDF8"))
+                setColorFilter(Color.parseColor("#0A84FF"))
                 layoutParams = LinearLayout.LayoutParams(48, 48).apply {
                     marginEnd = 24
                 }

@@ -1,140 +1,128 @@
 package org.octanelab.toolapp.ui.components
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import org.octanelab.toolapp.ui.theme.EmeraldSuccess
-import org.octanelab.toolapp.ui.theme.GlassBorder
-import org.octanelab.toolapp.ui.theme.RoseError
-import org.octanelab.toolapp.ui.theme.TextMuted
-import org.octanelab.toolapp.ui.theme.TextPrimary
+import androidx.compose.ui.unit.sp
+import org.octanelab.toolapp.ui.theme.IOSBlue
+import org.octanelab.toolapp.ui.theme.IOSCardBackground
+import org.octanelab.toolapp.ui.theme.IOSGreen
+import org.octanelab.toolapp.ui.theme.IOSTextMuted
+import org.octanelab.toolapp.ui.theme.IOSTextPrimary
+import org.octanelab.toolapp.ui.theme.IOSTextSecondary
 
 @Composable
 fun PermissionCard(
     title: String,
     description: String,
     icon: ImageVector,
+    iconBgColor: Color,
     isGranted: Boolean,
     onGrantClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val borderColor by animateColorAsState(
-        targetValue = if (isGranted) EmeraldSuccess.copy(alpha = 0.5f) else GlassBorder,
-        label = "BorderColor"
-    )
-
-    val badgeBgColor by animateColorAsState(
-        targetValue = if (isGranted) EmeraldSuccess.copy(alpha = 0.15f) else RoseError.copy(alpha = 0.15f),
-        label = "BadgeBg"
-    )
-
-    val badgeIconColor by animateColorAsState(
-        targetValue = if (isGranted) EmeraldSuccess else RoseError,
-        label = "BadgeIcon"
-    )
-
-    Column(
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .border(1.dp, borderColor, RoundedCornerShape(20.dp))
-            .padding(16.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(IOSCardBackground)
+            .clickable { if (!isGranted) onGrantClick() }
+            .padding(horizontal = 16.dp, vertical = 14.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.weight(1f)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.weight(1f)
+            // iOS Style Square Icon Badge
+            Box(
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(iconBgColor),
+                contentAlignment = Alignment.Center
             ) {
-                // Icon Box
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .size(44.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                ) {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(14.dp))
-
-                Column {
-                    Text(
-                        text = title,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = TextPrimary
-                    )
-                    Text(
-                        text = description,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = TextMuted
-                    )
-                }
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(20.dp)
+                )
             }
 
-            // Status Indicator Badge
-            Icon(
-                imageVector = if (isGranted) Icons.Default.CheckCircle else Icons.Default.Warning,
-                contentDescription = if (isGranted) "Granted" else "Action Required",
-                tint = badgeIconColor,
-                modifier = Modifier
-                    .size(28.dp)
-                    .clip(CircleShape)
-                    .background(badgeBgColor)
-                    .padding(2.dp)
-            )
+            Spacer(modifier = Modifier.width(14.dp))
+
+            Column {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 16.sp
+                    ),
+                    color = IOSTextPrimary
+                )
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
+                    color = IOSTextSecondary
+                )
+            }
         }
 
-        if (!isGranted) {
-            Spacer(modifier = Modifier.height(14.dp))
-            Button(
-                onClick = onGrantClick,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                ),
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.fillMaxWidth()
+        Spacer(modifier = Modifier.width(10.dp))
+
+        // iOS Action / Status Indicator
+        if (isGranted) {
+            Box(
+                modifier = Modifier
+                    .size(24.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(IOSGreen.copy(alpha = 0.2f)),
+                contentAlignment = Alignment.Center
             ) {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = "Activo",
+                    tint = IOSGreen,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
+        } else {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "Grant Permission in Settings",
-                    style = MaterialTheme.typography.labelMedium
+                    text = "Configurar",
+                    style = MaterialTheme.typography.labelMedium.copy(fontSize = 14.sp),
+                    color = IOSBlue
+                )
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null,
+                    tint = IOSTextMuted,
+                    modifier = Modifier.size(20.dp)
                 )
             }
         }

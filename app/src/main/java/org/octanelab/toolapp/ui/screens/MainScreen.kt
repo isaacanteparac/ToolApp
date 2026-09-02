@@ -8,7 +8,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Collections
 import androidx.compose.material.icons.filled.Tune
@@ -25,26 +24,26 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.octanelab.toolapp.data.ScreenshotItem
-import org.octanelab.toolapp.ui.theme.CyanPrimary
-import org.octanelab.toolapp.ui.theme.DarkGlassHeader
-import org.octanelab.toolapp.ui.theme.DarkSurface
-import org.octanelab.toolapp.ui.theme.GlassBorder
-import org.octanelab.toolapp.ui.theme.TextMuted
-import org.octanelab.toolapp.ui.theme.TextPrimary
+import org.octanelab.toolapp.ui.theme.IOSBackground
+import org.octanelab.toolapp.ui.theme.IOSBlue
+import org.octanelab.toolapp.ui.theme.IOSGlassBottomBar
+import org.octanelab.toolapp.ui.theme.IOSTextMuted
+import org.octanelab.toolapp.ui.theme.IOSTextPrimary
 
 enum class AppTab {
-    DASHBOARD,
-    GALLERY
+    GALLERY,
+    DASHBOARD
 }
 
 @Composable
 fun MainScreen() {
     val context = LocalContext.current
-    var currentTab by remember { mutableStateOf(AppTab.DASHBOARD) }
+    var currentTab by remember { mutableStateOf(AppTab.GALLERY) }
     var selectedScreenshot by remember { mutableStateOf<ScreenshotItem?>(null) }
 
     // Permission Activity Launchers
@@ -52,9 +51,9 @@ fun MainScreen() {
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            Toast.makeText(context, "Storage permission granted!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Permiso de Galería otorgado", Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(context, "Storage permission is required to manage screenshots.", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Se requiere permiso para gestionar capturas.", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -62,7 +61,7 @@ fun MainScreen() {
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            Toast.makeText(context, "Notification permission granted!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Permiso de notificaciones otorgado", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -75,46 +74,45 @@ fun MainScreen() {
         Scaffold(
             bottomBar = {
                 NavigationBar(
-                    containerColor = DarkGlassHeader,
-                    contentColor = TextPrimary,
-                    tonalElevation = 8.dp,
-                    modifier = Modifier.clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                    containerColor = IOSGlassBottomBar,
+                    contentColor = IOSTextPrimary,
+                    tonalElevation = 0.dp
                 ) {
-                    NavigationBarItem(
-                        selected = currentTab == AppTab.DASHBOARD,
-                        onClick = { currentTab = AppTab.DASHBOARD },
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Default.Tune,
-                                contentDescription = "Dashboard"
-                            )
-                        },
-                        label = { Text("Dashboard") },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = CyanPrimary,
-                            selectedTextColor = CyanPrimary,
-                            indicatorColor = CyanPrimary.copy(alpha = 0.15f),
-                            unselectedIconColor = TextMuted,
-                            unselectedTextColor = TextMuted
-                        )
-                    )
-
                     NavigationBarItem(
                         selected = currentTab == AppTab.GALLERY,
                         onClick = { currentTab = AppTab.GALLERY },
                         icon = {
                             Icon(
                                 imageVector = Icons.Default.Collections,
-                                contentDescription = "Gallery"
+                                contentDescription = "Fototeca"
                             )
                         },
-                        label = { Text("Gallery") },
+                        label = { Text("Fototeca", fontSize = 12.sp) },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = CyanPrimary,
-                            selectedTextColor = CyanPrimary,
-                            indicatorColor = CyanPrimary.copy(alpha = 0.15f),
-                            unselectedIconColor = TextMuted,
-                            unselectedTextColor = TextMuted
+                            selectedIconColor = IOSBlue,
+                            selectedTextColor = IOSBlue,
+                            indicatorColor = IOSBlue.copy(alpha = 0.15f),
+                            unselectedIconColor = IOSTextMuted,
+                            unselectedTextColor = IOSTextMuted
+                        )
+                    )
+
+                    NavigationBarItem(
+                        selected = currentTab == AppTab.DASHBOARD,
+                        onClick = { currentTab = AppTab.DASHBOARD },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Default.Tune,
+                                contentDescription = "Ajustes"
+                            )
+                        },
+                        label = { Text("Ajustes", fontSize = 12.sp) },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = IOSBlue,
+                            selectedTextColor = IOSBlue,
+                            indicatorColor = IOSBlue.copy(alpha = 0.15f),
+                            unselectedIconColor = IOSTextMuted,
+                            unselectedTextColor = IOSTextMuted
                         )
                     )
                 }
@@ -123,9 +121,14 @@ fun MainScreen() {
             Box(
                 modifier = Modifier
                     .padding(paddingValues)
-                    .background(MaterialTheme.colorScheme.background)
+                    .background(IOSBackground)
             ) {
                 when (currentTab) {
+                    AppTab.GALLERY -> GalleryScreen(
+                        onSelectScreenshot = { screenshot ->
+                            selectedScreenshot = screenshot
+                        }
+                    )
                     AppTab.DASHBOARD -> DashboardScreen(
                         onRequestMediaPermission = {
                             val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -139,11 +142,6 @@ fun MainScreen() {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                                 notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                             }
-                        }
-                    )
-                    AppTab.GALLERY -> GalleryScreen(
-                        onSelectScreenshot = { screenshot ->
-                            selectedScreenshot = screenshot
                         }
                     )
                 }

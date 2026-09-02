@@ -1,7 +1,6 @@
 package org.octanelab.toolapp.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,14 +33,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import org.octanelab.toolapp.ui.theme.CyanPrimary
-import org.octanelab.toolapp.ui.theme.DarkGlassHeader
-import org.octanelab.toolapp.ui.theme.EmeraldSuccess
-import org.octanelab.toolapp.ui.theme.GlassBorder
-import org.octanelab.toolapp.ui.theme.TextMuted
-import org.octanelab.toolapp.ui.theme.TextPrimary
-import org.octanelab.toolapp.ui.theme.VioletAccent
+import androidx.compose.ui.unit.sp
+import org.octanelab.toolapp.ui.theme.IOSBlue
+import org.octanelab.toolapp.ui.theme.IOSCardBackground
+import org.octanelab.toolapp.ui.theme.IOSGlassHeader
+import org.octanelab.toolapp.ui.theme.IOSGreen
+import org.octanelab.toolapp.ui.theme.IOSPurple
+import org.octanelab.toolapp.ui.theme.IOSTextMuted
+import org.octanelab.toolapp.ui.theme.IOSTextPrimary
+import org.octanelab.toolapp.ui.theme.IOSTextSecondary
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -59,32 +61,31 @@ fun MovieSynopsisOverlay(
     var isSavedSuccess by remember { mutableStateOf(false) }
 
     val formattedDate = remember(dateAdded) {
-        val sdf = SimpleDateFormat("MMM dd, yyyy • HH:mm", Locale.getDefault())
+        val sdf = SimpleDateFormat("dd MMM yyyy • HH:mm", Locale.getDefault())
         sdf.format(Date(dateAdded * 1000))
     }
 
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
-            .background(DarkGlassHeader)
-            .border(1.dp, GlassBorder, RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
-            .padding(20.dp)
+            .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+            .background(IOSGlassHeader)
+            .padding(horizontal = 20.dp, vertical = 16.dp)
     ) {
         Column {
-            // Drag handle line
+            // iOS Drag Bar Handle
             Box(
                 modifier = Modifier
-                    .width(40.dp)
-                    .height(4.dp)
-                    .clip(RoundedCornerShape(2.dp))
-                    .background(GlassBorder)
+                    .width(36.dp)
+                    .height(5.dp)
+                    .clip(RoundedCornerShape(2.5.dp))
+                    .background(Color.White.copy(alpha = 0.3f))
                     .align(Alignment.CenterHorizontally)
             )
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            // Movie Style Title Header
+            // iOS Photo Information Header
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -93,32 +94,36 @@ fun MovieSynopsisOverlay(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = displayName,
-                        style = MaterialTheme.typography.titleLarge,
-                        color = TextPrimary
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp
+                        ),
+                        color = IOSTextPrimary,
+                        maxLines = 1
                     )
 
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(6.dp))
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        // Category Badge
+                        // iOS Album Badge
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(VioletAccent.copy(alpha = 0.2f))
-                                .padding(horizontal = 8.dp, vertical = 4.dp)
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(IOSPurple.copy(alpha = 0.25f))
+                                .padding(horizontal = 8.dp, vertical = 3.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Category,
                                 contentDescription = null,
-                                tint = VioletAccent,
-                                modifier = Modifier.size(14.dp)
+                                tint = IOSPurple,
+                                modifier = Modifier.size(12.dp)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 text = category,
-                                style = MaterialTheme.typography.labelMedium,
-                                color = VioletAccent
+                                style = MaterialTheme.typography.labelMedium.copy(fontSize = 12.sp),
+                                color = IOSPurple
                             )
                         }
 
@@ -129,61 +134,63 @@ fun MovieSynopsisOverlay(
                             Icon(
                                 imageVector = Icons.Default.Schedule,
                                 contentDescription = null,
-                                tint = TextMuted,
-                                modifier = Modifier.size(14.dp)
+                                tint = IOSTextMuted,
+                                modifier = Modifier.size(13.dp)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 text = formattedDate,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = TextMuted
+                                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 12.sp),
+                                color = IOSTextMuted
                             )
                         }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
-            // Movie Synopsis / Description Text Area
+            // iOS Style Synopsis / EXIF Input Field
             OutlinedTextField(
                 value = synopsisText,
                 onValueChange = {
                     synopsisText = it
                     isSavedSuccess = false
                 },
-                label = { Text("Movie-Style Synopsis / EXIF Description") },
-                placeholder = { Text("Add plot notes, context or tags stored directly in EXIF metadata...") },
+                label = { Text("Sinopsis / Descripción EXIF") },
+                placeholder = { Text("Añada notas, resumen estilo película o etiquetas almacenadas en EXIF...") },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = null,
-                        tint = CyanPrimary
+                        tint = IOSBlue
                     )
                 },
-                maxLines = 4,
+                maxLines = 3,
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = CyanPrimary,
-                    unfocusedBorderColor = GlassBorder,
-                    focusedLabelColor = CyanPrimary,
-                    unfocusedLabelColor = TextMuted,
-                    focusedTextColor = TextPrimary,
-                    unfocusedTextColor = TextPrimary
+                    focusedBorderColor = IOSBlue,
+                    unfocusedBorderColor = Color.White.copy(alpha = 0.15f),
+                    focusedLabelColor = IOSBlue,
+                    unfocusedLabelColor = IOSTextMuted,
+                    focusedTextColor = IOSTextPrimary,
+                    unfocusedTextColor = IOSTextPrimary,
+                    focusedContainerColor = IOSCardBackground.copy(alpha = 0.6f),
+                    unfocusedContainerColor = IOSCardBackground.copy(alpha = 0.6f)
                 ),
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            // Action Button
+            // iOS Style Action Button
             Button(
                 onClick = {
                     onSaveDescription(synopsisText)
                     isSavedSuccess = true
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isSavedSuccess) EmeraldSuccess else CyanPrimary
+                    containerColor = if (isSavedSuccess) IOSGreen else IOSBlue
                 ),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth()
@@ -191,13 +198,17 @@ fun MovieSynopsisOverlay(
                 Icon(
                     imageVector = Icons.Default.Save,
                     contentDescription = null,
+                    tint = Color.White,
                     modifier = Modifier.size(18.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = if (isSavedSuccess) "Description Saved to EXIF Tag!" else "Embed Synopsis into EXIF Metadata",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = Color.Black
+                    text = if (isSavedSuccess) "¡Metadatos EXIF Guardados!" else "Incrustar Sinopsis en EXIF",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 15.sp
+                    ),
+                    color = Color.White
                 )
             }
         }

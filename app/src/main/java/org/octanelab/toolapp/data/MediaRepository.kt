@@ -7,6 +7,10 @@ import android.os.Build
 import android.provider.MediaStore
 import java.io.InputStream
 import java.io.OutputStream
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 data class ScreenshotItem(
     val id: Long,
@@ -16,7 +20,33 @@ data class ScreenshotItem(
     val relativePath: String,
     val dateAdded: Long,
     val size: Long
-)
+) {
+    val yearLabel: String get() {
+        val sdf = SimpleDateFormat("yyyy", Locale("es", "ES"))
+        return sdf.format(Date(dateAdded * 1000))
+    }
+
+    val monthLabel: String get() {
+        val sdf = SimpleDateFormat("MMMM yyyy", Locale("es", "ES"))
+        return sdf.format(Date(dateAdded * 1000)).replaceFirstChar { it.uppercase() }
+    }
+
+    val dayLabel: String get() {
+        val sdf = SimpleDateFormat("dd 'de' MMMM", Locale("es", "ES"))
+        return sdf.format(Date(dateAdded * 1000))
+    }
+
+    val hourOfDay: Int get() {
+        val cal = Calendar.getInstance()
+        cal.timeInMillis = dateAdded * 1000
+        return cal.get(Calendar.HOUR_OF_DAY)
+    }
+
+    val hourBucketLabel: String get() {
+        val hour = hourOfDay
+        return String.format(Locale.getDefault(), "%02d:00 - %02d:59", hour, hour)
+    }
+}
 
 object MediaRepository {
 

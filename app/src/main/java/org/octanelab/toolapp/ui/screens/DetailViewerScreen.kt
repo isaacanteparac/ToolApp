@@ -14,7 +14,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -37,8 +36,8 @@ import coil.request.ImageRequest
 import org.octanelab.toolapp.data.EXIFHelper
 import org.octanelab.toolapp.data.ScreenshotItem
 import org.octanelab.toolapp.ui.components.MovieSynopsisOverlay
-import org.octanelab.toolapp.ui.theme.DarkBackground
-import org.octanelab.toolapp.ui.theme.DarkSurface
+import org.octanelab.toolapp.ui.theme.IOSBackground
+import org.octanelab.toolapp.ui.theme.IOSCardBackground
 
 @Composable
 fun DetailViewerScreen(
@@ -70,15 +69,15 @@ fun DetailViewerScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkBackground)
+            .background(IOSBackground)
     ) {
-        // Zoomable & Pannable Image Canvas
+        // Fullscreen Image Canvas
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .pointerInput(Unit) {
                     detectTapGestures(
-                        onDoubleTap = { tapOffset ->
+                        onDoubleTap = {
                             if (scale > 1f) {
                                 scale = 1f
                                 offset = Offset.Zero
@@ -109,24 +108,24 @@ fun DetailViewerScreen(
             )
         }
 
-        // Top Bar Back Navigation Button
+        // Top Left iOS Circular Back Navigation Button
         IconButton(
             onClick = onBack,
             modifier = Modifier
-                .padding(top = 40.dp, start = 16.dp)
-                .size(44.dp)
+                .padding(top = 44.dp, start = 16.dp)
+                .size(40.dp)
                 .clip(CircleShape)
-                .background(DarkSurface.copy(alpha = 0.8f))
+                .background(IOSCardBackground.copy(alpha = 0.85f))
                 .align(Alignment.TopStart)
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = "Volver",
                 tint = Color.White
             )
         }
 
-        // Bottom Movie Synopsis & EXIF Editor Overlay Sheet
+        // Bottom Movie Synopsis & EXIF Metadata Sheet
         MovieSynopsisOverlay(
             displayName = item.displayName,
             category = item.category,
@@ -136,9 +135,9 @@ fun DetailViewerScreen(
                 val success = EXIFHelper.writeDescription(context, item.uri, newDesc)
                 if (success) {
                     exifDescription = newDesc
-                    Toast.makeText(context, "EXIF metadata saved successfully!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "¡Sinopsis guardada en metadatos EXIF!", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(context, "Failed to write EXIF metadata. Check permissions.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Error al guardar en EXIF.", Toast.LENGTH_SHORT).show()
                 }
             },
             modifier = Modifier.align(Alignment.BottomCenter)
