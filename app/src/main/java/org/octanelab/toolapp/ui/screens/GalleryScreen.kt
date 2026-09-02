@@ -81,13 +81,13 @@ fun GalleryScreen(
     var allScreenshots by remember { mutableStateOf<List<ScreenshotItem>>(emptyList()) }
     
     // STEP 1: Sticky App Filter State
-    var selectedApp by remember { mutableStateOf("Todas") }
+    var selectedApp by remember { mutableStateOf("General") }
 
     // STEP 2: Time Breakdown Mode State
     var timeMode by remember { mutableStateOf(TimeBreakdownMode.HORA) }
     
     // STEP 3: Selected Time Slot State
-    var selectedTimeSlot by remember { mutableStateOf("Todas") }
+    var selectedTimeSlot by remember { mutableStateOf("General") }
 
     var isLoading by remember { mutableStateOf(true) }
 
@@ -179,7 +179,7 @@ fun GalleryScreen(
         ) {
             Column {
                 Text(
-                    text = "Fototeca",
+                    text = "ScreenShot",
                     style = MaterialTheme.typography.headlineLarge.copy(
                         fontWeight = FontWeight.Bold,
                         fontSize = 34.sp
@@ -193,20 +193,6 @@ fun GalleryScreen(
                 )
             }
 
-            IconButton(
-                onClick = { loadMedia() },
-                modifier = Modifier
-                    .size(36.dp)
-                    .clip(CircleShape)
-                    .background(IOSCardBackground)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Refresh,
-                    contentDescription = "Actualizar",
-                    tint = IOSBlue,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
         }
 
         // ROW 1: Sticky App Selector Carousel (Primary Filter)

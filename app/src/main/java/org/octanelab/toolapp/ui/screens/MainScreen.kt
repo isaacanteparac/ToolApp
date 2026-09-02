@@ -84,10 +84,10 @@ fun MainScreen() {
                         icon = {
                             Icon(
                                 imageVector = Icons.Default.Collections,
-                                contentDescription = "Fototeca"
+                                contentDescription = "ScreenShot"
                             )
                         },
-                        label = { Text("Fototeca", fontSize = 12.sp) },
+                        label = { Text("ScreenShot", fontSize = 12.sp) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = IOSBlue,
                             selectedTextColor = IOSBlue,
